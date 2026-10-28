@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Ajustes de mi cuenta - Epicentro Gourmet</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head>
+<body>
+<nav class="navbar"><a th:href="@{/}" class="navbar-brand">Epicentro Gourmet</a><div class="navbar-actions"><a th:href="@{/}" class="btn btn-outline">Inicio</a><form th:action="@{/logout}" method="post"><button class="btn btn-secondary">Cerrar sesión</button></form></div></nav>
+<main class="container"><div class="card auth-card">
+<h1>Ajustes de mi cuenta</h1><p class="subtitle">Podés reemplazar la contraseña temporal que recibiste por correo por una contraseña propia.</p>
+<div th:if="${error}" class="alert alert-error" role="alert" th:text="${error}"></div>
+<div th:if="${mensajeExito}" class="alert alert-success" role="status" th:text="${mensajeExito}"></div>
+<form th:action="@{/cuenta/password}" method="post">
+<div class="form-group"><label for="actual">Contraseña actual o temporal</label><input id="actual" name="actual" type="password" autocomplete="current-password" required></div>
+<div class="form-group"><label for="nueva">Nueva contraseña</label><input id="nueva" name="nueva" type="password" autocomplete="new-password" minlength="8" required><small>Al menos 8 caracteres.</small></div>
+<div class="form-group"><label for="confirmacion">Confirmar nueva contraseña</label><input id="confirmacion" name="confirmacion" type="password" autocomplete="new-password" minlength="8" required></div>
+<button class="btn" type="submit">Guardar contraseña</button>
+</form></div></main>
+<footer class="site-footer"><div class="footer-group">Grupo 5</div><p class="footer-subtitle">Trabajo Práctico Hito 2</p></footer>
+</body></html>
