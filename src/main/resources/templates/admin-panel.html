@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administración - Epicentro Gourmet</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar-brand">Epicentro Gourmet</a>
+    <div class="navbar-actions">
+        <a th:href="@{/responsable/panel}" class="btn btn-outline">Gestión de Unidades</a>
+        <a th:href="@{/pedidos/nuevo}" class="btn btn-outline">Pedidos</a>
+        <a th:href="@{/}" class="btn btn-outline">Inicio</a>
+        <a th:href="@{/cuenta/ajustes}" class="btn btn-secondary">Ajustes de mi cuenta</a><form th:action="@{/logout}" method="post" style="display: inline;">
+            <button class="btn btn-secondary">Cerrar sesión</button>
+        </form>
+    </div>
+</nav>
+
+<main class="container">
+
+    <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <!-- Selector de Festival y Top X Canon -->
+    <div class="card">
+        <h2>Panel de Administración y Reportes</h2>
+        <p class="subtitle">Seleccioná un festival para consultar sus unidades, ranking de recaudación, mayores cánones y administrar sus datos.</p>
+        <form method="get" th:action="@{/admin/panel}" class="form-row">
+            <div class="form-group">
+                <label>Festival</label>
+                <select name="festivalId" required>
+                    <option th:each="f : ${festivales}"
+                            th:value="${f.id}"
+                            th:text="${f.nombre + ' (' + f.fechaInicio + ' al ' + f.fechaFin + ')'}"
+                            th:selected="${festivalSeleccionado != null and f.id == festivalSeleccionado.id}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Unidades con mayor canon (X)</label>
+                <input type="number" name="cantidad" min="1" max="100" th:value="${cantidad}">
+            </div>
+            <div style="display: flex; align-items: flex-end; margin-bottom: 1.15rem;">
+                <button class="btn">Consultar reportes</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Unidades habilitadas en el Festival + Vincular / Quitar -->
+    <div class="card" th:if="${festivalSeleccionado != null}">
+        <h2 th:text="${festivalSeleccionado.nombre}"></h2>
+        <p class="subtitle" th:text="${'Temporada: ' + festivalSeleccionado.temporada + ' | Período: ' + festivalSeleccionado.fechaInicio + ' al ' + festivalSeleccionado.fechaFin}"></p>
+
+        <h3>Unidades de Venta Habilitadas en este Festival</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Unidad</th>
+                        <th>Código</th>
+                        <th>Tipo</th>
+                        <th>Superficie (m²)</th>
+                        <th>Responsable</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="u : ${unidades}">
+                        <td><strong th:text="${u.nombreComercial}"></strong></td>
+                        <td><span class="badge" th:text="${u.codigo}"></span></td>
+                        <td th:text="${u.class.simpleName}"></td>
+                        <td th:text="${u.superficie + ' m²'}"></td>
+                        <td th:text="${u.responsable != null ? u.responsable.nombre + ' ' + u.responsable.apellido : '-'}"></td>
+                        <td>
+                            <form th:action="@{/admin/festivales/{id}/quitar-unidad/{uid}(id=${festivalSeleccionado.id},uid=${u.id})}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-secondary" style="padding: 0.3rem 0.7rem; font-size: 0.82rem;">Quitar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <form th:action="@{/admin/festivales/{id}/vincular-unidad(id=${festivalSeleccionado.id})}" method="post" class="form-row" style="margin-top: 1rem;">
+            <div class="form-group">
+                <label>Habilitar otra Unidad de Venta existente en este Festival</label>
+                <select name="unidadId" required>
+                    <option th:each="u : ${todasLasUnidades}" th:value="${u.id}" th:text="${u.nombreComercial + ' (' + u.codigo + ')'}"></option>
+                </select>
+            </div>
+            <div style="display: flex; align-items: flex-end; margin-bottom: 1.15rem;">
+                <button type="submit" class="btn">Vincular Unidad al Festival</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Ranking de Recaudación -->
+    <div class="card" th:if="${festivalSeleccionado != null}">
+        <h3>Ranking de Unidades por Recaudación (Descendente)</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Puesto</th>
+                        <th>Unidad</th>
+                        <th>Código</th>
+                        <th>Recaudación Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r, stat : ${ranking}">
+                        <td><strong th:text="${'#' + stat.count}"></strong></td>
+                        <td th:text="${r.nombreComercial}"></td>
+                        <td th:text="${r.codigo}"></td>
+                        <td><strong class="money" style="color: #166534;" th:text="${'$ ' + #numbers.formatDecimal(r.recaudacion, 1, 'POINT', 2, 'COMMA')}"></strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top X Unidades con Mayor Canon -->
+    <div class="card" th:if="${festivalSeleccionado != null}">
+        <h3 th:text="${'Top ' + cantidad + ' Unidades con Mayor Canon (ReporteMayoresCanonDTO)'}"></h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Unidad</th>
+                        <th>Código</th>
+                        <th>Tipo</th>
+                        <th>Canon Abonado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${mayoresCanon}">
+                        <td th:text="${r.nombreComercial}"></td>
+                        <td th:text="${r.codigo}"></td>
+                        <td th:text="${r.tipoUnidad}"></td>
+                        <td><strong class="money" th:text="${'$ ' + #numbers.formatDecimal(r.canon, 1, 'POINT', 2, 'COMMA')}"></strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modificar o Eliminar Festival Seleccionado -->
+    <div class="card" th:if="${festivalSeleccionado != null and festivalSeleccionado.costo != null}">
+        <h3>Modificar Festival Seleccionado y su Tabla de Costos</h3>
+        <form th:action="@{/admin/festivales/modificar/{id}(id=${festivalSeleccionado.id})}" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre del Festival</label>
+                    <input type="text" name="nombre" th:value="${festivalSeleccionado.nombre}" required>
+                </div>
+                <div class="form-group">
+                    <label>Temporada</label>
+                    <input type="text" name="temporada" th:value="${festivalSeleccionado.temporada}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Fecha Inicio</label>
+                    <input type="date" name="fechaInicio" th:value="${festivalSeleccionado.fechaInicio}" required>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Fin</label>
+                    <input type="date" name="fechaFin" th:value="${festivalSeleccionado.fechaFin}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Costo por Superficie ($/m²)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="costoPorSuperficie" th:value="${festivalSeleccionado.costo.costoPorSuperficie}" required></span>
+                </div>
+                <div class="form-group">
+                    <label>Costo por Montaje ($/min)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="costoPorMontaje" th:value="${festivalSeleccionado.costo.costoPorMontaje}" required></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Plus Electricidad ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="plusElectricidad" th:value="${festivalSeleccionado.costo.plusElectricidad}" required></span>
+                </div>
+                <div class="form-group">
+                    <label>Sueldo Base ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="sueldoBase" th:value="${festivalSeleccionado.costo.sueldoBase}" required></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Monto por Año de Antigüedad ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="montoAnioAntiguedad" th:value="${festivalSeleccionado.costo.montoAnioAntiguedad}" required></span>
+                </div>
+                <div class="form-group">
+                    <label>Plus Cocinero ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="plusCocinero" th:value="${festivalSeleccionado.costo.plusCocinero}" required></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Plus Cocinero Ayudante ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="plusCocineroAyudante" th:value="${festivalSeleccionado.costo.plusCocineroAyudante}" required></span>
+                </div>
+                <div class="form-group">
+                    <label>Plus Lavaplatos ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="plusLavaplatos" th:value="${festivalSeleccionado.costo.plusLavaplatos}" required></span>
+                </div>
+            </div>
+            <button type="submit" class="btn">Guardar Cambios del Festival</button>
+        </form>
+
+        <form th:action="@{/admin/festivales/eliminar/{id}(id=${festivalSeleccionado.id})}" method="post" style="margin-top: 0.75rem;">
+            <button type="submit" class="btn btn-secondary">Eliminar este Festival (si no tiene pedidos)</button>
+        </form>
+    </div>
+
+    <!-- Crear Nuevo Festival -->
+    <div class="card">
+        <h3>Dar de Alta Nuevo Festival</h3>
+        <form th:action="@{/admin/festivales/alta}" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre del Festival</label>
+                    <input type="text" name="nombre" placeholder="Ej: Festival de Invierno" required>
+                </div>
+                <div class="form-group">
+                    <label>Temporada</label>
+                    <input type="text" name="temporada" placeholder="Invierno" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Fecha Inicio</label>
+                    <input type="date" name="fechaInicio" required>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Fin</label>
+                    <input type="date" name="fechaFin" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Costo por Superficie ($/m²)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="costoPorSuperficie" th:value="${costosPredeterminados.costoPorSuperficie}" required></span>
+                </div>
+                <div class="form-group">
+                    <label>Costo por Montaje ($/min)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="costoPorMontaje" th:value="${costosPredeterminados.costoPorMontaje}" required></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Plus Electricidad ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="plusElectricidad" th:value="${costosPredeterminados.plusElectricidad}" required></span>
+                </div>
+                <div class="form-group">
+                    <label>Sueldo Base ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="sueldoBase" th:value="${costosPredeterminados.sueldoBase}" required></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Monto por Año de Antigüedad ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="montoAnioAntiguedad" th:value="${costosPredeterminados.montoAnioAntiguedad}" required></span>
+                </div>
+                <div class="form-group">
+                    <label>Plus Cocinero ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="plusCocinero" th:value="${costosPredeterminados.plusCocinero}" required></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Plus Cocinero Ayudante ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="plusCocineroAyudante" th:value="${costosPredeterminados.plusCocineroAyudante}" required></span>
+                </div>
+                <div class="form-group">
+                    <label>Plus Lavaplatos ($)</label>
+                    <span class="money-field"><span class="money-prefix" aria-hidden="true">$</span><input type="number" min="0" max="9999999999.99" step="0.01" name="plusLavaplatos" th:value="${costosPredeterminados.plusLavaplatos}" required></span>
+                </div>
+            </div>
+            <button type="submit" class="btn">Crear Nuevo Festival</button>
+        </form>
+    </div>
+
+</main>
+
+<footer class="site-footer">
+    <div class="footer-group">Grupo 5</div>
+    <p class="footer-subtitle">Trabajo Práctico Hito 2</p>
+</footer>
+
+</body>
+</html>
