@@ -23,14 +23,14 @@ Cada integrante es responsable de dos casos de uso y de dos validaciones de carg
 
 | Caso de uso | Responsable | Validaciones de carga a cargo | Pull Request |
 |---|---|---|---|
-| **CU01** — Registrar una unidad de venta con su Responsable | Ivan Kersevan | **VAL01** DNI del Responsable · **VAL02** código único de unidad | [COMPLETAR enlace al PR] |
-| **CU02** — Consultar el ranking de recaudación de un festival | Ivan Kersevan | | [COMPLETAR enlace al PR] |
+| **CU01** — Registrar una unidad de venta con su Responsable | Ivan Kersevan | **VAL01** DNI del Responsable · **VAL02** código único de unidad | [PR #3](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5/pull/3) |
+| **CU02** — Consultar el ranking de recaudación de un festival | Ivan Kersevan | | [PR #6](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5/pull/6) |
 | **CU03** — Incorporar un empleado a una unidad de venta | Nicolas Ariel Basalo | **VAL03** mayoría de edad · **VAL04** correo válido y no repetido | [PR #1](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5/pull/1) |
 | **CU04** — Reactivar un empleado dado de baja lógicamente | Nicolas Ariel Basalo | | [PR #2](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5/pull/2) |
-| **CU05** — Modificar un plato del menú de una unidad | Candela Fernández | **VAL05** precio y costo del plato · **VAL06** cantidades del pedido | [COMPLETAR enlace al PR] |
-| **CU06** — Registrar un pedido de venta durante un festival | Candela Fernández | | [COMPLETAR enlace al PR] |
-| **CU07** — Realizar el cierre diario de caja | Lucas Emanuel Radino Nieva | **VAL07** un solo cierre por jornada | [COMPLETAR enlace al PR] |
-| **CU08** — Consultar la rentabilidad neta de una unidad entre dos fechas | Lucas Emanuel Radino Nieva | **VAL08** período de rentabilidad | [COMPLETAR enlace al PR] |
+| **CU05** — Modificar un plato del menú de una unidad | Candela Fernández | **VAL05** precio y costo del plato · **VAL06** cantidades del pedido | [PR #5](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5/pull/5) |
+| **CU06** — Registrar un pedido de venta durante un festival | Candela Fernández | | [PR #8](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5/pull/8) |
+| **CU07** — Realizar el cierre diario de caja | Lucas Emanuel Radino Nieva | **VAL07** un solo cierre por jornada | [PR #9](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5/pull/9) |
+| **CU08** — Consultar la rentabilidad neta de una unidad entre dos fechas | Lucas Emanuel Radino Nieva | **VAL08** período de rentabilidad | [PR #10](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5/pull/10) |
 
 ### Requisitos del grupo
 
