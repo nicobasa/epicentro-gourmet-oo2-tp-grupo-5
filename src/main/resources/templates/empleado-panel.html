@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Mi Panel - Epicentro Gourmet</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head>
+<body>
+<nav class="navbar"><a th:href="@{/}" class="navbar-brand">Epicentro Gourmet</a><div class="navbar-actions"><a th:if="${esCajero}" th:href="@{/caja}" class="btn">Cierre de caja</a><a th:href="@{/}" class="btn btn-outline">Inicio</a><a th:href="@{/cuenta/ajustes}" class="btn btn-secondary">Ajustes de mi cuenta</a><form th:action="@{/logout}" method="post"><button class="btn btn-secondary">Cerrar sesión</button></form></div></nav>
+<main class="container">
+  <div class="card"><h2>Mi información laboral</h2><p><strong>Nombre:</strong> <span th:text="${empleado.nombre + ' ' + empleado.apellido}"></span></p><p><strong>DNI:</strong> <span th:text="${empleado.dni}"></span></p><p><strong>Ingreso:</strong> <span th:text="${empleado.fechaIngreso}"></span></p><p><strong>Puesto:</strong> <span th:text="${tipoPuesto}"></span></p><p><strong>Unidad actual:</strong> <span th:text="${empleado.unidadVenta.nombreComercial + ' (' + empleado.unidadVenta.codigo + ')'}"></span></p></div>
+  <div class="card" th:if="${asignacionActual != null}"><h2>Festival activo</h2><p><strong>Festival:</strong> <span th:text="${asignacionActual.festival.nombre}"></span></p><p><strong>Unidad:</strong> <span th:text="${asignacionActual.unidad.nombreComercial}"></span></p><p><strong>Período asignado:</strong> <span th:text="${asignacionActual.fechaInicio + ' al ' + asignacionActual.fechaFin}"></span></p></div>
+  <div class="card" th:if="${asignacionActual == null}"><p>No tenés una asignación laboral activa en este momento.</p></div>
+  <div class="card"><h2>Historial y recibos</h2><div class="table-wrapper"><table><thead><tr><th>Festival</th><th>Unidad</th><th>Período trabajado</th><th>Liquidación</th><th>Recibo</th></tr></thead><tbody>
+    <tr th:each="a : ${historial}"><td th:text="${a.festival.nombre}"></td><td th:text="${a.unidad.nombreComercial}"></td><td th:text="${a.fechaInicio + ' al ' + a.fechaFin}"></td><td class="money" th:text="${'$ ' + #numbers.formatDecimal(sueldos[a.id], 1, 'POINT', 2, 'COMMA')}"></td><td><a th:href="@{/recibos/{id}.pdf(id=${a.festival.id})}" class="btn">Descargar PDF</a></td></tr>
+  </tbody></table></div></div>
+</main><footer class="site-footer"><div class="footer-group">Epicentro Gourmet</div><p class="footer-subtitle">Trabajo Práctico Hito 2</p></footer>
+</body></html>
