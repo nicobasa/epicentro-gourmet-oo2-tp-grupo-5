@@ -13,7 +13,7 @@ Aplicación del Grupo 5 para administrar festivales gastronómicos, unidades de 
 | Nicolas Ariel Basalo | UNLA-74520 | 46358143 | [nicobasa](https://github.com/nicobasa) |
 | Lucas Emanuel Radino Nieva | UNLA-75327 | 44935519 | [LucasRadino](https://github.com/LucasRadino) |
 
-- Repositorio de entrega: **[COMPLETAR URL]**
+- Repositorio de entrega: **[epicentro-gourmet-oo2-tp-grupo-5](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5)**
 - Rama de entrega: `main`
 - Diagrama de clases: [docs/diagrama-clases.md](docs/diagrama-clases.md)
 
@@ -25,12 +25,12 @@ Cada integrante es responsable de dos casos de uso y de dos validaciones de carg
 |---|---|---|---|
 | **CU01** — Registrar una unidad de venta con su Responsable | Ivan Kersevan | **VAL01** DNI del Responsable · **VAL02** código único de unidad | [COMPLETAR enlace al PR] |
 | **CU02** — Consultar el ranking de recaudación de un festival | Ivan Kersevan | | [COMPLETAR enlace al PR] |
-| **CU03** — Incorporar un empleado a una unidad de venta | Candela Fernández | **VAL03** mayoría de edad · **VAL04** correo válido y no repetido | [COMPLETAR enlace al PR] |
-| **CU04** — Reactivar un empleado dado de baja lógicamente | Candela Fernández | | [COMPLETAR enlace al PR] |
-| **CU05** — Modificar un plato del menú de una unidad | Nicolas Ariel Basalo | **VAL05** precio y costo del plato · **VAL06** cantidades del pedido | [COMPLETAR enlace al PR] |
-| **CU06** — Registrar un pedido de venta durante un festival | Nicolas Ariel Basalo | | [COMPLETAR enlace al PR] |
-| **CU07** — Realizar el cierre diario de caja | Lucas Emanuel Radino Nieva | **VAL07** un solo cierre por jornada · **VAL08** período de rentabilidad | [COMPLETAR enlace al PR] |
-| **CU08** — Consultar la rentabilidad neta de una unidad entre dos fechas | Lucas Emanuel Radino Nieva | | [COMPLETAR enlace al PR] |
+| **CU03** — Incorporar un empleado a una unidad de venta | Nicolas Ariel Basalo | **VAL03** mayoría de edad · **VAL04** correo válido y no repetido | [PR #1](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5/pull/1) |
+| **CU04** — Reactivar un empleado dado de baja lógicamente | Nicolas Ariel Basalo | | [PR #2](https://github.com/nicobasa/epicentro-gourmet-oo2-tp-grupo-5/pull/2) |
+| **CU05** — Modificar un plato del menú de una unidad | Candela Fernández | **VAL05** precio y costo del plato · **VAL06** cantidades del pedido | [COMPLETAR enlace al PR] |
+| **CU06** — Registrar un pedido de venta durante un festival | Candela Fernández | | [COMPLETAR enlace al PR] |
+| **CU07** — Realizar el cierre diario de caja | Lucas Emanuel Radino Nieva | **VAL07** un solo cierre por jornada | [COMPLETAR enlace al PR] |
+| **CU08** — Consultar la rentabilidad neta de una unidad entre dos fechas | Lucas Emanuel Radino Nieva | **VAL08** período de rentabilidad | [COMPLETAR enlace al PR] |
 
 ### Requisitos del grupo
 
