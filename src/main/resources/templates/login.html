@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar Sesión - Epicentro Gourmet</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar-brand">Epicentro Gourmet</a>
+    <div class="navbar-actions">
+        <a th:href="@{/}" class="btn btn-secondary">Volver al Inicio</a>
+    </div>
+</nav>
+
+<div class="auth-wrapper">
+    <div class="card auth-card">
+        <h2>Iniciar Sesión</h2>
+        <p class="subtitle">Ingresá con tu cuenta de Administrador, Responsable o Empleado.</p>
+
+        <div th:if="${param.error}" class="alert alert-error">
+            Usuario o contraseña incorrectos. Intentá nuevamente.
+        </div>
+
+        <div th:if="${param.logout}" class="alert alert-success">
+            Has cerrado sesión correctamente.
+        </div>
+
+        <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
+
+        <form th:action="@{/login}" method="post">
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}">
+
+            <div class="form-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" placeholder="Ej: admin o tu email" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-full">Ingresar</button>
+        </form>
+
+        <p style="margin-top: 1.25rem; text-align: center; font-size: 0.9rem; color: #64748b;">
+            ¿Tenés un puesto o Food Truck?
+            <a th:href="@{/registro-unidad}" style="color: #d97706; font-weight: 600;">Registrate acá</a>
+        </p>
+    </div>
+</div>
+<footer class="site-footer">
+    <div class="footer-group">Grupo 5</div>
+    <p class="footer-subtitle">Trabajo Práctico Hito 2</p>
+</footer>
+</body>
+</html>
