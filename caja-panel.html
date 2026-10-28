@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Cierre de Caja - Epicentro Gourmet</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head>
+<body>
+<nav class="navbar"><a th:href="@{/}" class="navbar-brand">Epicentro Gourmet</a><div class="navbar-actions"><a th:href="@{/empleado/panel}" class="btn btn-outline">Mi panel</a><a th:href="@{/cuenta/ajustes}" class="btn btn-secondary">Ajustes de mi cuenta</a><form th:action="@{/logout}" method="post"><button class="btn btn-secondary">Cerrar sesión</button></form></div></nav>
+<main class="container"><div class="card"><h2>Cierre de caja</h2><p th:text="${cajero.nombre + ' ' + cajero.apellido + ' — ' + cajero.unidadVenta.nombreComercial}"></p>
+<div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div><div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+<p>El sistema calcula el total vendido hoy para tu unidad y registra un único cierre diario.</p><form th:action="@{/caja/cerrar}" method="post"><button type="submit" class="btn">Cerrar caja de hoy</button></form></div></main>
+</body></html>
