@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Alta de Pedido - Epicentro Gourmet</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar-brand">Epicentro Gourmet</a>
+    <div class="navbar-actions">
+        <a th:href="@{/}" class="btn btn-outline">Volver al Inicio</a>
+        <a th:href="@{/cuenta/ajustes}" class="btn btn-secondary">Ajustes de mi cuenta</a><form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-secondary">Cerrar sesión</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="card">
+        <h2>Registrar Nuevo Pedido</h2>
+        <p class="subtitle">La fecha y hora de la transacción se asigna automáticamente al momento actual.</p>
+
+        <form th:action="@{/pedidos/guardar}" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Festival donde ocurre la venta</label>
+                    <select name="festivalId" required>
+                        <option th:each="f : ${festivales}" th:value="${f.id}" th:text="${f.nombre}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Unidad de Venta que entrega</label>
+                    <select name="unidadVentaId" required>
+                        <option th:each="u : ${unidades}" th:value="${u.id}"
+                                th:text="${u.nombreComercial + ' (' + u.codigo + ')'}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <h3>Ítem 1 (Obligatorio)</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Plato del Menú</label>
+                    <select name="plato1Id" id="plato1" required>
+                        <optgroup th:each="u : ${unidades}" th:label="${u.nombreComercial}" th:attr="data-unidad=${u.id}"><option th:each="pl : ${u.platos}" th:value="${pl.id}" th:text="${pl.nombre + ' - $ ' + #numbers.formatDecimal(pl.precioVenta, 1, 'POINT', 2, 'COMMA')}"></option></optgroup>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad</label>
+                    <input type="number" name="cantidad1" min="1" value="1" required>
+                </div>
+            </div>
+
+            <h3>Ítem 2 (Opcional)</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Segundo Plato (opcional)</label>
+                    <select name="plato2Id" id="plato2">
+                        <option value="">-- Sin segundo plato --</option>
+                        <optgroup th:each="u : ${unidades}" th:label="${u.nombreComercial}" th:attr="data-unidad=${u.id}"><option th:each="pl : ${u.platos}" th:value="${pl.id}" th:text="${pl.nombre + ' - $ ' + #numbers.formatDecimal(pl.precioVenta, 1, 'POINT', 2, 'COMMA')}"></option></optgroup>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad</label>
+                    <input type="number" name="cantidad2" min="0" value="0">
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Confirmar y Registrar Pedido</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Pedidos Registrados</h2>
+        <p class="subtitle">Listado de operaciones cargadas en la base de datos con sus detalles y totales.</p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha y Hora</th>
+                        <th>Festival</th>
+                        <th>Unidad de Venta</th>
+                        <th>Detalle de Platos</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${pedidos}">
+                        <td><strong th:text="'#' + ${p.id}"></strong></td>
+                        <td th:text="${#temporals.format(p.fechaTransaccion, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td th:text="${p.festival != null ? p.festival.nombre : '-'}"></td>
+                        <td th:text="${p.unidadDeVenta != null ? p.unidadDeVenta.nombreComercial : '-'}"></td>
+                        <td th:text="${resumenItemsPorPedido[p.id]}"></td>
+                        <td>
+                            <strong class="money" style="color: #166534;"
+                                    th:text="${'$ ' + #numbers.formatDecimal(totalesPorPedido[p.id], 1, 'POINT', 2, 'COMMA')}"></strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script>
+function filtrarMenu(){const id=document.querySelector('[name=unidadVentaId]').value;document.querySelectorAll('optgroup[data-unidad]').forEach(g=>g.hidden=g.dataset.unidad!==id);for(const s of [document.getElementById('plato1'),document.getElementById('plato2')]){if(s.selectedOptions.length&&s.selectedOptions[0].parentElement?.dataset.unidad!==id)s.selectedIndex=0;}}
+document.querySelector('[name=unidadVentaId]').addEventListener('change',filtrarMenu);filtrarMenu();
+</script>
+<footer class="site-footer">
+    <div class="footer-group">Grupo 5</div>
+    <p class="footer-subtitle">Trabajo Práctico Hito 2</p>
+</footer>
+</body>
+</html>
