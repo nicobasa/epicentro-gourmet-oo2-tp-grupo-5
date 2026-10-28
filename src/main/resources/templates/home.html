@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Epicentro Gourmet - Inicio</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <a th:href="@{/}" class="navbar-brand">Epicentro Gourmet</a>
+
+    <div class="navbar-actions" sec:authorize="!isAuthenticated()">
+        <a th:href="@{/registro-unidad}" class="btn btn-outline">Registrar Unidad de Venta</a>
+        <a th:href="@{/login}" class="btn">Iniciar Sesión</a>
+    </div>
+
+    <div class="navbar-actions" sec:authorize="isAuthenticated()">
+        <span>Hola, <strong sec:authentication="name"></strong></span>
+        <!-- Mostrar el nombre del rol en español, no la autoridad técnica ROLE_* -->
+        <span class="badge" sec:authorize="hasRole('ADMIN')">Administrador</span>
+        <span class="badge" sec:authorize="hasRole('RESPONSABLE') and !hasRole('ADMIN')">Responsable</span>
+        <span class="badge" sec:authorize="hasRole('CAJERO') and !hasRole('ADMIN') and !hasRole('RESPONSABLE')">Cajero</span>
+        <span class="badge" sec:authorize="hasRole('EMPLEADO') and !hasAnyRole('CAJERO','ADMIN','RESPONSABLE')" th:text="${puestoStaff}">Empleado</span>
+        <a th:href="@{/cuenta/ajustes}" class="btn btn-secondary">Ajustes de mi cuenta</a><form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-secondary">Cerrar sesión</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- Panel rápido según rol cuando está logueado -->
+    <div class="card" sec:authorize="isAuthenticated()">
+        <h2>Panel de Gestión</h2>
+        <p class="subtitle">Seleccioná una acción según tu perfil en el predio ferial.</p>
+
+        <div sec:authorize="hasRole('ADMIN')">
+            <p>Has ingresado como <strong>Administrador del Predio</strong>.</p>
+            <a th:href="@{/admin/panel}" class="btn">Panel de administración y reportes</a>
+            <a th:href="@{/responsable/panel}" class="btn btn-secondary">Gestionar unidades y empleados</a>
+        </div>
+        <div sec:authorize="hasRole('RESPONSABLE') and !hasRole('ADMIN')">
+            <p>Has ingresado como <strong>Responsable de Unidad de Venta</strong>.</p>
+            <a th:href="@{/responsable/panel}" class="btn">Gestión de empleados y liquidación de sueldos</a>
+        </div>
+        <div sec:authorize="hasRole('CAJERO') and !hasAnyRole('ADMIN','RESPONSABLE')">
+            <p>Has ingresado como <strong>Cajero del Staff</strong>.</p>
+            <a th:href="@{/empleado/panel}" class="btn">Ver mi información, puesto y recibos</a>
+            <a th:href="@{/caja}" class="btn btn-secondary">Cierre de caja</a>
+        </div>
+        <div sec:authorize="hasRole('EMPLEADO') and !hasAnyRole('CAJERO','ADMIN','RESPONSABLE')">
+            <p>Has ingresado como <strong th:text="${puestoStaff + ' del Staff'}">Empleado del Staff</strong>.</p>
+            <a th:href="@{/empleado/panel}" class="btn">Ver mi información, puesto y recibos</a>
+        </div>
+
+        <div sec:authorize="hasAnyRole('ADMIN','RESPONSABLE','CAJERO')" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
+            <a th:href="@{/pedidos/nuevo}" class="btn btn-secondary">Ir a Alta y Listado de Pedidos</a>
+        </div>
+    </div>
+
+    <!-- Listado de Festivales -->
+    <div class="card">
+        <h2>Festivales Anuales Programados</h2>
+        <p class="subtitle">Consultá las fechas y temporadas de los próximos eventos en Epicentro Gourmet.</p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Festival</th>
+                        <th>Temporada</th>
+                        <th>Fecha de Inicio</th>
+                        <th>Fecha de Fin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="f : ${festivales}">
+                        <td><strong th:text="${f.nombre}"></strong></td>
+                        <td><span class="badge" th:text="${f.temporada}"></span></td>
+                        <td th:text="${f.fechaInicio}"></td>
+                        <td th:text="${f.fechaFin}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<footer class="site-footer">
+    <div class="footer-group">Grupo 5</div>
+    <p class="footer-subtitle">Trabajo Práctico Hito 2</p>
+</footer>
+</body>
+</html>
